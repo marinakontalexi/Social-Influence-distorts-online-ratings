@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # model parameters
-N = 1000    # users
-lovers_perc = 0.01
+N = 100000    # users
+lovers_perc = 0.6
 lovers = int(N*lovers_perc)
 lovers_rating = 4
 haters_perc = 1 - lovers_perc
@@ -50,16 +50,16 @@ for arr in ARR:
         elif arr == "random_switch1": arrivals = random_switch1
         else: arrivals = hater_heavy
         
-        ratings = [arrivals[0]]
-        avg = [arrivals[0]]
+        avg = [arrivals[0]]*N
+        mean = arrivals[0]
 
         for i in range(1,N):
-            rating = inf*np.mean(ratings) + (1-inf)*arrivals[i]
-            ratings.append(rating)
-            avg.append(np.mean(ratings))
+            rating = inf*mean + (1-inf)*arrivals[i]
+            mean = (mean*i + rating)/(i+1)
+            avg[i] = mean
             
         plt.plot(avg, label="influence = " + str(inf)[0:4])
-        avg_last.append(np.mean(ratings))
+        avg_last.append(mean)
 
     plt.plot([true_rating]*N, label = "true rating")
     plt.title("Lovers rating: " + str(lovers_rating) + " Haters rating: " + str(haters_rating) + " Percentage of lovers: " + str(lovers_perc))
