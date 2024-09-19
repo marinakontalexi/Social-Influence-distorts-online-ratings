@@ -21,11 +21,12 @@ class User:
     b = 0.5
     inf = 0
 
-    def __init__(self, i, r, m = 0.6, s = 0.6):
+    def __init__(self, i, r, n = 0, m = 0.6, s = 0.6):
         self.rating = min(1, max(0, np.random.normal(loc = m, scale = s)))
         # self.rating = np.random.random()
         self.influence_type = i
-        self.rating_type = r        
+        self.rating_type = r 
+        self.noise = 1 if n == "noisy" else 0
 
     def rate(self, mean, a = 0.5, b = 0, c = 0):
         if (self.influence_type == "uniform"):
@@ -36,6 +37,7 @@ class User:
             self.inf = (abs(mean - self.rating)/max(mean, 1-mean))**2
         elif (self.influence_type == "sigmoid"):
             self.inf = sigmoid(User.b, abs(self.rating - mean))
+        self.inf = min(1, max(0, self.inf + self.noise*np.random.normal(0,0.2)))
 
         if (self.rating_type == "linear"):
             User.inf_sum += self.inf*mean + (1-self.inf)*self.rating
@@ -45,14 +47,12 @@ class User:
 
 # model parameters
 np.random.seed(1)
-N = 10000       # users
+N = 1000       # users
 one_perc = 0    # flag to order first 1% of users ->  
                 # 1: ascending   -1: descending   0: no ordering
 
 # init
-users = [0]*N
-for i in range(N):
-    users[i] = User("var", "linear")
+users = [User("var", "linear", "noisy") for _ in range(N)]
 
 if (one_perc):
     u = sorted(users[:int(N/100)], key = lambda elem: one_perc*elem.rating)
@@ -71,10 +71,10 @@ User.inf_sum = mean[0]
 for i in range(1,N):
     users[i].rate(mean[i-1])
     mean[i] = User.inf_sum/(i+1)
-print("Mean influence:", stat.mean([x.inf for x in users]))
+# print("Mean influence:", stat.mean([x.inf for x in users]))
 
 # influence curve calc
-accuracy = 100
+accuracy = 500
 m = [i/accuracy for i in range(accuracy)]
 y = [0]*accuracy
 for i in range(accuracy):
