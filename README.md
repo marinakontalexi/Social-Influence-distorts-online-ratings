@@ -30,7 +30,3 @@ The study examines how social influence distorts online ratings by analyzing lar
    python src/fig{1,2,3}.py
    ```
 
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
