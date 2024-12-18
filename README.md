@@ -1,9 +1,13 @@
 # Social Influence Distorts Online Ratings
 
 This repository provides the code and data for the paper:
+
 **Paper influence distorts online ratings**
+
 Marina Kontalexi, University of Southern Denmark
+
 Alexandros Gelastopoulos, IAS Toulouse
+
 Pantelis P. Analytis, University of Southern Denmark
 
 ## Overview
